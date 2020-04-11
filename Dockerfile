@@ -23,7 +23,6 @@ ADD scripts/entrypoint.sh scripts/bootstrap.sh scripts/maven.sh /
 # PYX
 ARG GIT_REPO="https://github.com/DaDummy/PretendYoureXyzzy.git"
 ARG GIT_BRANCH="master"
-VOLUME /app /output
 
 RUN apk --no-cache add git openssh \
  && git clone -b "$GIT_BRANCH" "$GIT_REPO" /project \
@@ -48,5 +47,4 @@ CMD mvn clean package war:exploded jetty:run -Dhttps.protocols=TLSv1.2 -Dmaven.b
 # docker build --target runtime .
 FROM davidcaste/alpine-tomcat:jre8tomcat7 AS run
 COPY --from=base /project/target/ZY.war /opt/tomcat/webapps/
-VOLUME /opt/tomcat/webapps/
 CMD /opt/tomcat/bin/catalina.sh run
