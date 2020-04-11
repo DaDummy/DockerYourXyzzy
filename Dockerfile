@@ -46,5 +46,6 @@ CMD mvn clean package war:exploded jetty:run -Dhttps.protocols=TLSv1.2 -Dmaven.b
 # or:
 # docker build --target runtime .
 FROM davidcaste/alpine-tomcat:jre8tomcat7 AS run
+COPY --from=base /project/pyx.sqlite /db/
 COPY --from=base /project/target/ZY.war /opt/tomcat/webapps/
 CMD /opt/tomcat/bin/catalina.sh run
