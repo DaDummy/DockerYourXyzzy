@@ -18,7 +18,7 @@ RUN apk add --no-cache curl tar bash procps \
 
 ADD ./overrides/settings-docker.xml /usr/share/maven/ref/
 ADD overrides /overrides
-ADD scripts/entrypoint.sh scripts/bootstrap.sh scripts/maven.sh /
+ADD scripts/entrypoint.sh /
 
 # PYX
 ARG GIT_REPO="https://github.com/DaDummy/PretendYoureXyzzy.git"
@@ -44,8 +44,11 @@ CMD mvn clean package war:exploded jetty:run -Dhttps.protocols=TLSv1.2 -Dmaven.b
 # ---
 # docker build .
 # or:
-# docker build --target runtime .
+# docker build --target run .
 FROM davidcaste/alpine-tomcat:jre8tomcat7 AS run
-COPY --from=base /project/pyx.sqlite /db/
+VOLUME /db
+COPY --from=base /project/pyx.sqlite /pyx.sqlite.template
 COPY --from=base /project/target/ZY.war /opt/tomcat/webapps/
+ADD scripts/bootstrap.sh /
+ENTRYPOINT ["/bootstrap.sh"]
 CMD /opt/tomcat/bin/catalina.sh run

@@ -1,16 +1,13 @@
-#!/bin/sh
-set +x
+#!/bin/bash
+set -e
 
-# Maven
-echo "Maven setup..."
-bash /maven.sh
-echo "... done."
+if [ ! -f /db/pyx.sqlite ]; then
+  echo "DB directory empty - copying from template..."
+  cp /pyx.sqlite.template /db/pyx.sqlite
+else
+  echo "DB directory populated - skipping copy."
+fi
 
-## Works!
-mvn -Dhttps.protocols=TLSv1.2 \
-  -Dmaven.buildNumber.doCheck=false \
-  -Dmaven.buildNumber.doUpdate=false \
-  clean package war:war
-
-# Move completed binary
-cp /app/target/ZY.war /opt/tomcat/webapps/
+# Command exec
+echo Entrypoint executing: "$@"
+exec "$@"
