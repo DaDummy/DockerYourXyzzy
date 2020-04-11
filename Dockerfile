@@ -29,7 +29,7 @@ RUN apk --no-cache add git openssh \
  && git clone -b "$GIT_BRANCH" "$GIT_REPO" /project \
  && cd project \
  && cp /overrides/build.properties build.properties \
- && mvn clean package war:war
+ && mvn clean package war:war -Dmaven.buildNumber.doUpdate=false
 
 # ---
 # docker build --target base .
